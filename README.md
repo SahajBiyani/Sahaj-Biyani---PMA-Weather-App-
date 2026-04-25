@@ -1,4 +1,4 @@
-# SkyBound Weather
+# How's the Weather?
 
 SkyBound is a weather application showcasing persistence with full CRUD functionality, API data retrieval, and error handling. It allows users to authenticate, query weather for date ranges, store those queries, and view logs of their historical searches along with interactive charts and exports.
 
@@ -23,11 +23,3 @@ SkyBound is a weather application showcasing persistence with full CRUD function
    ```bash
    npm run dev
    ```
-
-## GitHub Repository (Public vs Private)
-Because this workspace is hosted within Google AI Studio, I cannot directly generate a GitHub repository link for you. However, you can export this entire project directly to your own GitHub account:
-
-1. Click the **Settings (Gear Icon)** in the AI Studio editor.
-2. Select **Export to GitHub**.
-3. It will ask for repository details. You can choose whether to make the exported repository **Public** (visible to recruiters and the world) or **Private** (hidden, accessible only to you and collaborators).
-4. For technical assessments, a **Public** repository is generally recommended so that the reviewing engineers can easily clone and view your work!
