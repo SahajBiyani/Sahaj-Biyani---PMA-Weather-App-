@@ -1,0 +1,8 @@
+{
+  "name": "Sahaj - Weather app",
+  "description": "Tech assessment 2: Weather App (backend engineers) - focus on persistence with CRUD functionality as well as API calls and error handling",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": []
+}

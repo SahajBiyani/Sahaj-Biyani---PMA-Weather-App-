@@ -1,0 +1,65 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    
+    // We enforce email_verified if applicable, but for generic Google Auth it's true
+    function isSignedIn() { 
+      return request.auth != null && request.auth.token.email_verified == true; 
+    }
+
+    function isValidWeatherSearch(data) {
+      return data.keys().hasAll(['locationName', 'query', 'lat', 'lon', 'startDate', 'endDate', 'temperature', 'details', 'userId', 'createdAt', 'updatedAt'])
+        && data.locationName is string && data.locationName.size() <= 1000
+        && data.query is string && data.query.size() <= 1000
+        && data.lat is number
+        && data.lon is number
+        && data.startDate is string && data.startDate.size() <= 50
+        && data.endDate is string && data.endDate.size() <= 50
+        && data.temperature is number
+        && data.details is map
+        && data.userId is string && data.userId.size() <= 128
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp
+        && (data.keys().hasAll(['notes']) == false || (data.notes is string && data.notes.size() <= 5000));
+    }
+
+    match /weather_searches/{searchId} {
+      // List/read requires any signed in user
+      allow read: if isSignedIn();
+      
+      allow create: if isSignedIn()
+        && isValidId(searchId)
+        && incoming().keys().size() >= 11 && incoming().keys().size() <= 12
+        && isValidWeatherSearch(incoming())
+        && incoming().userId == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isSignedIn()
+        && isValidId(searchId)
+        && (
+          // Action: Edit record notes/location/temp
+          (incoming().diff(existing()).affectedKeys().hasOnly(['notes', 'locationName', 'temperature', 'updatedAt']))
+        )
+        && isValidWeatherSearch(incoming())
+        && incoming().updatedAt == request.time
+        && incoming().createdAt == existing().createdAt
+        && incoming().userId == existing().userId;
+
+      allow delete: if isSignedIn()
+        && isValidId(searchId);
+    }
+  }
+}

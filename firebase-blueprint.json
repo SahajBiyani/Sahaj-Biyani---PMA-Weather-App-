@@ -1,0 +1,44 @@
+{
+  "entities": {
+    "WeatherSearch": {
+      "title": "Weather Search Record",
+      "description": "Records of weather searches and retrieved data for persistence and CRUD operations.",
+      "type": "object",
+      "properties": {
+        "locationName": { "type": "string", "description": "The name of the location searched." },
+        "query": { "type": "string", "description": "The raw user input for the location." },
+        "lat": { "type": "number", "description": "Latitude of the location." },
+        "lon": { "type": "number", "description": "Longitude of the location." },
+        "startDate": { "type": "string", "format": "date", "description": "Start of the date range." },
+        "endDate": { "type": "string", "format": "date", "description": "End of the date range." },
+        "temperature": { "type": "number", "description": "Retrieved temperature or average temperature." },
+        "details": { "type": "object", "description": "Additional retrieved weather metrics (humidity, wind speed, etc.)." },
+        "notes": { "type": "string", "description": "User notes or description of why they searched this." },
+        "userId": { "type": "string", "description": "ID of the user who made the request." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of creation." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Timestamp of last update." }
+      },
+      "required": ["locationName", "lat", "lon", "temperature", "userId", "createdAt"]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Public profile information for users.",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "email": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "weather_searches/{searchId}": {
+      "schema": "WeatherSearch",
+      "description": "Collection of weather search records documenting user queries and results."
+    },
+    "users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile documents."
+    }
+  }
+}
